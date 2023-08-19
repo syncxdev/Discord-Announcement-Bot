@@ -1,0 +1,13 @@
+{
+  "token": "BOT_TOKEN",
+  "channels": {
+    "channel 1 id-here": {
+      "name": "Name1",
+      "title": "Name1"
+    },
+    "channel 2 id-here": {
+      "name": "Name1",
+      "title": "Name1"
+    }
+  }
+}
