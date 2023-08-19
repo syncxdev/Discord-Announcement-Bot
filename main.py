@@ -29,6 +29,12 @@ async def on_message(message):
         description=message.content,
         color=discord.Color.red()
     )
+
+    if message.guild:
+        server_icon_url = message.guild.icon_url
+        if server_icon_url:
+            embed.set_thumbnail(url=server_icon_url)
+
     embed.set_footer(text=f'Autor: {message.author}', icon_url=message.author.avatar.url)
     embed.timestamp = message.created_at
 
@@ -37,3 +43,4 @@ async def on_message(message):
         await channel.send(embed=embed)
 
 client.run(TOKEN)
+
