@@ -5,15 +5,21 @@
       "name": "Name1",
       "title": "Name1",
       "show_server_icon": true,
-      "message_duration": 3600,  // 1h
-      "archive_channel": "archive_channel_id_here"
+      "message_duration": 3600,
+      "archive_channel": "archive_channel_id_here",
+      "auto_reactions": ["👍", "❤️"],
+      "formatting": true,
+      "color": "#3498db"
     },
     "channel_2_id_here": {
       "name": "Name2",
       "title": "Name2",
       "show_server_icon": false,
       "message_duration": 0,
-      "archive_channel": "archive_channel_id_here"
+      "archive_channel": "archive_channel_id_here",
+      "auto_reactions": [],
+      "formatting": false,
+      "color": "#ffffff"
     }
   }
 }
