@@ -1,5 +1,6 @@
 import discord
 import json
+import asyncio
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -41,6 +42,17 @@ async def on_message(message):
 
     channel = message.guild.get_channel(int(channel_id))
     if channel and isinstance(channel, discord.TextChannel):
-        await channel.send(embed=embed)
+        sent_message = await channel.send(embed=embed)
+        
+        message_duration = channel_data.get('message_duration', 0)
+        if message_duration > 0:
+            await asyncio.sleep(message_duration)
+            await sent_message.delete()
+
+        archive_channel_id = channel_data.get('archive_channel', None)
+        if archive_channel_id and archive_channel_id != "archive_channel_id_here":
+            archive_channel = message.guild.get_channel(int(archive_channel_id))
+            if archive_channel and isinstance(archive_channel, discord.TextChannel):
+                await archive_channel.send(embed=embed)
 
 client.run(TOKEN)
