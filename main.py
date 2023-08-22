@@ -30,7 +30,8 @@ async def on_message(message):
         color=discord.Color.red()
     )
 
-    if message.guild:
+    show_server_icon = channel_data.get('show_server_icon', False)
+    if show_server_icon and message.guild:
         server_icon_url = message.guild.icon_url
         if server_icon_url:
             embed.set_thumbnail(url=server_icon_url)
@@ -43,4 +44,3 @@ async def on_message(message):
         await channel.send(embed=embed)
 
 client.run(TOKEN)
-
