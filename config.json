@@ -4,12 +4,16 @@
     "channel_1_id_here": {
       "name": "Name1",
       "title": "Name1",
-      "show_server_icon": true
+      "show_server_icon": true,
+      "message_duration": 3600,  // 1h
+      "archive_channel": "archive_channel_id_here"
     },
     "channel_2_id_here": {
       "name": "Name2",
       "title": "Name2",
-      "show_server_icon": false
+      "show_server_icon": false,
+      "message_duration": 0,
+      "archive_channel": "archive_channel_id_here"
     }
   }
 }
