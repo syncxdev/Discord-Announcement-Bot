@@ -28,8 +28,11 @@ async def on_message(message):
     embed = discord.Embed(
         title=channel_data['title'],
         description=message.content,
-        color=discord.Color.red()
+        color=int(channel_data.get('color', '0x3498db'), 16)
     )
+
+    if channel_data.get('formatting', False):
+        embed.description = f"*{message.content}*"
 
     show_server_icon = channel_data.get('show_server_icon', False)
     if show_server_icon and message.guild:
@@ -55,4 +58,9 @@ async def on_message(message):
             if archive_channel and isinstance(archive_channel, discord.TextChannel):
                 await archive_channel.send(embed=embed)
 
+        auto_reactions = channel_data.get('auto_reactions', [])
+        for reaction in auto_reactions:
+            await sent_message.add_reaction(reaction)
+
 client.run(TOKEN)
+
