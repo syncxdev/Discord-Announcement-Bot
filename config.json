@@ -1,13 +1,15 @@
 {
   "token": "BOT_TOKEN",
   "channels": {
-    "channel 1 id-here": {
+    "channel_1_id_here": {
       "name": "Name1",
-      "title": "Name1"
+      "title": "Name1",
+      "show_server_icon": true
     },
-    "channel 2 id-here": {
-      "name": "Name1",
-      "title": "Name1"
+    "channel_2_id_here": {
+      "name": "Name2",
+      "title": "Name2",
+      "show_server_icon": false
     }
   }
 }
