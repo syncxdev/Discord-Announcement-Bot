@@ -3,7 +3,7 @@ import json
 import asyncio
 
 intents = discord.Intents.default()
-intents.message_content = True
+intents.messages = True
 
 client = discord.Client(intents=intents)
 
@@ -11,6 +11,8 @@ with open('config.json', 'r') as f:
     config = json.load(f)
 
 TOKEN = config['token']
+archive_channel_id = config.get('archive_channel')
+
 channels = config['channels']
 
 repeat_tasks = {}  # Dictionary to store repeat tasks for each channel
@@ -24,6 +26,33 @@ async def on_ready():
             interval = channel_data['repeat']['interval']
             channel = client.get_channel(int(channel_id))
             repeat_tasks[channel_id] = asyncio.create_task(repeat_announcement(channel, channel_data, interval))
+
+async def archive_announcement(channel_name, message_url):
+    if archive_channel_id and archive_channel_id != "archive_channel_id_here":
+        archive_channel = client.get_channel(int(archive_channel_id))
+        if archive_channel and isinstance(archive_channel, discord.TextChannel):
+            archive_message = await archive_channel.send(f'Archiviert von {channel_name}: {message_url}')
+
+async def repeat_announcement(channel, channel_data, interval):
+    while True:
+        await asyncio.sleep(interval)
+        last_message = await channel.history(limit=1).flatten()[-1]
+        if not last_message.author.bot:
+            await archive_announcement(channel_data['name'], last_message.jump_url)
+            
+            embed = create_embed(channel_data)
+            embed.description = last_message.content
+
+            sent_message = await channel.send(embed=embed)
+
+            message_duration = channel_data.get('message_duration', 0)
+            if message_duration > 0:
+                await asyncio.sleep(message_duration)
+                await sent_message.delete()
+
+            auto_reactions = channel_data.get('auto_reactions', [])
+            for reaction in auto_reactions:
+                await sent_message.add_reaction(reaction)
 
 @client.event
 async def on_message(message):
@@ -42,9 +71,10 @@ async def on_message(message):
     if show_server_icon and message.guild:
         server_icon_url = message.guild.icon_url
         if server_icon_url:
+            server_icon_url = server_icon_url_as_round(server_icon_url)
             embed.set_thumbnail(url=server_icon_url)
 
-    embed.set_footer(text=f'Autor: {message.author}', icon_url=message.author.avatar.url)
+    embed.set_footer(text=f'Autor: {message.author}' if not message.author.bot else "", icon_url=message.author.avatar_url if message.author.avatar_url and not message.author.bot else None)
     embed.timestamp = message.created_at
 
     channel = message.guild.get_channel(int(channel_id))
@@ -56,11 +86,8 @@ async def on_message(message):
             await asyncio.sleep(message_duration)
             await sent_message.delete()
 
-        archive_channel_id = channel_data.get('archive_channel', None)
         if archive_channel_id and archive_channel_id != "archive_channel_id_here":
-            archive_channel = channel.guild.get_channel(int(archive_channel_id))
-            if archive_channel and isinstance(archive_channel, discord.TextChannel):
-                await archive_channel.send(embed=embed)
+            await archive_announcement(channel_data['name'], sent_message.jump_url)
 
         auto_reactions = channel_data.get('auto_reactions', [])
         for reaction in auto_reactions:
@@ -69,7 +96,10 @@ async def on_message(message):
 def create_embed(channel_data):
     title = channel_data['title']
     description = channel_data.get('description', '')
-    color = int(channel_data.get('color', '0x3498db'), 16)
+    color = channel_data.get('color', 0x3498db)  # Standardfarbe, falls nicht angegeben
+    
+    if isinstance(color, str) and color.startswith('#'):
+        color = int(color[1:], 16)
     
     embed = discord.Embed(
         title=title,
@@ -78,28 +108,7 @@ def create_embed(channel_data):
     )
     return embed
 
-async def repeat_announcement(channel, channel_data, interval):
-    while True:
-        await asyncio.sleep(interval)
-        embed = create_embed(channel_data)
-        
-        sent_message = await channel.send(embed=embed)
-        
-        message_duration = channel_data.get('message_duration', 0)
-        if message_duration > 0:
-            await asyncio.sleep(message_duration)
-            await sent_message.delete()
-
-        archive_channel_id = channel_data.get('archive_channel', None)
-        if archive_channel_id and archive_channel_id != "archive_channel_id_here":
-            archive_channel = channel.guild.get_channel(int(archive_channel_id))
-            if archive_channel and isinstance(archive_channel, discord.TextChannel):
-                await archive_channel.send(embed=embed)
-
-        auto_reactions = channel_data.get('auto_reactions', [])
-        for reaction in auto_reactions:
-            await sent_message.add_reaction(reaction)
+def server_icon_url_as_round(icon_url):
+    return f'{icon_url}?size=1024&radius=512'
 
 client.run(TOKEN)
-
-
