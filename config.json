@@ -9,7 +9,11 @@
       "archive_channel": "archive_channel_id_here",
       "auto_reactions": ["👍", "❤️"],
       "formatting": true,
-      "color": "#3498db"
+      "color": "#3498db",
+      "repeat": {
+        "enabled": true,
+        "interval": 3600  // Repeat every 1 hour (in seconds)
+      }
     },
     "channel_2_id_here": {
       "name": "Name2",
@@ -19,7 +23,11 @@
       "archive_channel": "archive_channel_id_here",
       "auto_reactions": [],
       "formatting": false,
-      "color": "#ffffff"
+      "color": "#ffffff",
+      "repeat": {
+        "enabled": false,
+        "interval": 0
+      }
     }
   }
 }
