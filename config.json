@@ -1,33 +1,32 @@
 {
   "token": "BOT_TOKEN",
+  "archive_channel": "ARCHIVE_CHANNEL_ID", // will be improved
   "channels": {
-    "channel_1_id_here": {
+    "channel_1_id": {
       "name": "Name1",
-      "title": "Name1",
+      "title": "Title1",
       "show_server_icon": true,
-      "message_duration": 3600,
-      "archive_channel": "archive_channel_id_here",
-      "auto_reactions": ["👍", "❤️"],
+      "message_duration": 3600, // will be deleted after a while
+      "auto_reactions": ["👍", "❤️"], // is not possible yet
       "formatting": true,
       "color": "#3498db",
       "repeat": {
-        "enabled": true,
-        "interval": 3600  // Repeat every 1 hour (in seconds)
+        "enabled": false, // BETA
+        "interval": 3600
       }
     },
-    "channel_2_id_here": {
+    "channel_2_id": {
       "name": "Name2",
-      "title": "Name2",
+      "title": "Title2",
       "show_server_icon": false,
       "message_duration": 0,
-      "archive_channel": "archive_channel_id_here",
       "auto_reactions": [],
       "formatting": false,
       "color": "#ffffff",
       "repeat": {
-        "enabled": false,
-        "interval": 0
+        "enabled": false
       }
     }
   }
 }
+
