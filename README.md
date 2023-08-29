@@ -10,4 +10,4 @@ The bot monitors certain channels for messages from users. When a message is rec
 
 pip install -r requirements.txt
 
-Run the bot script: python bot.py
+Run the bot script: python main.py
